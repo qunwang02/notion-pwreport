@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes" />
+  <title>工作日志</title>
+  <style>
+    /* ===== 全局样式 ===== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      background: #f5f7fa;
+      padding: 16px;
+      padding-bottom: 80px;
+      color: #1e293b;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    /* ===== 标题 ===== */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .app-header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: 1px;
+    }
+
+    .app-header .badge {
+      font-size: 12px;
+      color: #64748b;
+      background: #e2e8f0;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* ===== 卡片 ===== */
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      border: 1px solid #eef2f6;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title .icon {
+      font-size: 18px;
+    }
+
+    /* ===== 表单行 ===== */
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .form-row .field {
+      flex: 1 1 calc(50% - 6px);
+      min-width: 120px;
+    }
+
+    .form-row .field.full {
+      flex: 1 1 100%;
+    }
+
+    .form-row .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #475569;
+      margin-bottom: 4px;
+    }
+
+    .form-row .field input,
+    .form-row .field select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 15px;
+      background: #fafbfc;
+      transition: border-color 0.2s;
+      color: #1e293b;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .form-row .field input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: #ffffff;
+    }
+
+    .form-row .field input:read-only {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    .form-row .field input::placeholder {
+      color: #94a3b8;
+      font-size: 13px;
+    }
+
+    /* ===== 天气显示 ===== */
+    .weather-display {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 8px 0 4px 0;
+    }
+
+    .weather-display .weather-icon {
+      font-size: 28px;
+      line-height: 1;
+      min-width: 36px;
+      text-align: center;
+    }
+
+    .weather-display .weather-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0f172a;
+      min-width: 40px;
+    }
+
+    .weather-display .temp-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      background: #f1f5f9;
+      padding: 4px 14px 4px 10px;
+      border-radius: 20px;
+      color: #334155;
+    }
+
+    .weather-display .temp-item .num {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .weather-display .temp-item .num.max {
+      color: #dc2626;
+    }
+    .weather-display .temp-item .num.min {
+      color: #2563eb;
+    }
+
+    .weather-status {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-left: 4px;
+    }
+
+    /* ===== 工作内容列表 ===== */
+    .work-list {
+      margin-top: 4px;
+    }
+
+    .work-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .work-item:last-child {
+      border-bottom: none;
+    }
+
+    .work-item .index {
+      font-size: 13px;
+      font-weight: 600;
+      color: #94a3b8;
+      min-width: 28px;
+      padding-top: 8px;
+      text-align: center;
+    }
+
+    .work-item textarea {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 48px;
+      background: #fafbfc;
+      transition: border-color 0.2s;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    .work-item textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: #ffffff;
+    }
+
+    .work-item textarea::placeholder {
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    .work-item .del-btn {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border: none;
+      border-radius: 10px;
+      background: #fef2f2;
+      color: #ef4444;
+      font-size: 20px;
+      font-weight: 300;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .work-item .del-btn:active {
+      transform: scale(0.92);
+      background: #fecaca;
+    }
+
+    .work-item .del-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ===== 操作按钮组 ===== */
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: center;
+      flex: 1 1 auto;
+      min-width: 80px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn-primary {
+      background: #3b82f6;
+      color: #ffffff;
+    }
+    .btn-primary:active {
+      background: #2563eb;
+    }
+
+    .btn-success {
+      background: #22c55e;
+      color: #ffffff;
+    }
+    .btn-success:active {
+      background: #16a34a;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #475569;
+      border: 1.5px solid #e2e8f0;
+    }
+    .btn-outline:active {
+      background: #f1f5f9;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: #ffffff;
+    }
+    .btn-danger:active {
+      background: #dc2626;
+    }
+
+    .btn-warning {
+      background: #f59e0b;
+      color: #ffffff;
+    }
+    .btn-warning:active {
+      background: #d97706;
+    }
+
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 13px;
+      border-radius: 8px;
+      flex: 0 1 auto;
+    }
+
+    /* ===== 消息提示 ===== */
+    .msg {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      display: none;
+      word-break: break-all;
+    }
+
+    .msg.show {
+      display: block;
+    }
+    .msg.ok {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+    .msg.err {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+    .msg.info {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+
+    /* ===== 历史记录（移动端卡片列表） ===== */
+    .table-wrapper {
+      margin-top: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .record-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .record-card {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 12px 14px;
+      border: 1px solid #eef2f6;
+      font-size: 14px;
+    }
+
+    .record-card .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 12px;
+      padding: 2px 0;
+    }
+
+    .record-card .row .label {
+      color: #64748b;
+      font-weight: 500;
+      min-width: 50px;
+    }
+
+    .record-card .row .value {
+      color: #0f172a;
+      word-break: break-all;
+    }
+
+    .record-card .row .value.work-content {
+      white-space: pre-wrap;
+      background: #f1f5f9;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      width: 100%;
+      margin-top: 2px;
+    }
+
+    .record-card .row .weather-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e2e8f0;
+      padding: 2px 12px 2px 8px;
+      border-radius: 16px;
+      font-size: 14px;
+    }
+
+    .record-empty {
+      text-align: center;
+      color: #94a3b8;
+      padding: 30px 0;
+      font-size: 14px;
+    }
+
+    /* ===== 移动端适配 ===== */
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+        padding-bottom: 60px;
+      }
+
+      .app-header h1 {
+        font-size: 20px;
+      }
+
+      .card {
+        padding: 14px 14px;
+        border-radius: 12px;
+      }
+
+      .form-row .field {
+        flex: 1 1 100%;
+        min-width: unset;
+      }
+
+      .btn {
+        font-size: 13px;
+        padding: 10px 14px;
+        flex: 1 1 calc(50% - 5px);
+      }
+
+      .work-item textarea {
+        font-size: 14px;
+        min-height: 44px;
+      }
+
+      .record-card {
+        font-size: 13px;
+        padding: 10px 12px;
+      }
+
+      .weather-display .temp-item {
+        font-size: 13px;
+        padding: 3px 12px 3px 8px;
+      }
+
+      .weather-display .weather-icon {
+        font-size: 24px;
+        min-width: 30px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .btn {
+        font-size: 12px;
+        padding: 8px 10px;
+        min-width: 60px;
+      }
+    }
+
+    /* ===== 打印样式 ===== */
+    @media print {
+      .btn-group,
+      .btn {
+        display: none !important;
+      }
+      .card {
+        border: 1px solid #ddd;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- ===== 标题 ===== -->
+    <div class="app-header">
+      <h1>📋 工作日志</h1>
+      <span class="badge">个人版</span>
+    </div>
+
+    <!-- ===== 表单卡片 ===== -->
+    <div class="card">
+      <div class="card-title">
+        <span class="icon">✏️</span> 填写日志
+      </div>
+
+      <!-- 日期 + 星期 -->
+      <div class="form-row">
+        <div class="field">
+          <label for="logDate">📅 日期</label>
+          <input type="date" id="logDate" />
+        </div>
+        <div class="field">
+          <label for="weekday">📆 星期</label>
+          <input type="text" id="weekday" readonly placeholder="自动显示" />
+        </div>
+      </div>
+
+      <!-- 天气（含天气状态） -->
+      <div class="form-row">
+        <div class="field full">
+          <label>🌤️ 天气</label>
+          <div class="weather-display">
+            <span class="weather-icon" id="weatherIcon">🌥️</span>
+            <span class="weather-text" id="weatherText">--</span>
+            <div class="temp-item">
+              🔥 最高 <span class="num max" id="highTemp">--</span>°
+            </div>
+            <div class="temp-item">
+              ❄️ 最低 <span class="num min" id="lowTemp">--</span>°
+            </div>
+            <span class="weather-status" id="weatherStatus">自动获取中...</span>
+          </div>
+          <!-- 隐藏字段用于提交 -->
+          <input type="hidden" id="weatherTextInput" />
+          <input type="hidden" id="highTempInput" />
+          <input type="hidden" id="lowTempInput" />
+        </div>
+      </div>
+
+      <!-- 工作内容（动态行） -->
+      <div style="margin-top: 12px;">
+        <label style="font-size:13px;font-weight:500;color:#475569;display:block;margin-bottom:6px;">
+          📝 工作内容
+          <span style="font-weight:400;color:#94a3b8;font-size:12px;">（点击下方按钮添加）</span>
+        </label>
+        <div class="work-list" id="workList">
+          <!-- 由 JS 动态渲染 -->
+        </div>
+        <button class="btn btn-outline btn-sm" id="addWorkBtn" style="margin-top:6px;width:100%;">
+          ＋ 添加工作内容
+        </button>
+      </div>
+
+      <!-- 操作按钮 -->
+      <div class="btn-group">
+        <button class="btn btn-primary" id="saveLocalBtn">💾 保存本地</button>
+        <button class="btn btn-success" id="submitNotionBtn">🚀 提交 Notion</button>
+        <button class="btn btn-warning" id="exportCSVBtn">📤 导出 CSV</button>
+        <button class="btn btn-danger" id="clearLocalBtn">🗑️ 清空本地</button>
+      </div>
+
+      <!-- 消息 -->
+      <div id="msg" class="msg"></div>
+    </div>
+
+    <!-- ===== 历史记录卡片 ===== -->
+    <div class="card">
+      <div class="card-title">
+        <span class="icon">📂</span> 历史记录
+        <span style="font-weight:400;color:#94a3b8;font-size:13px;margin-left:auto;" id="recordCount">共 0 条</span>
+      </div>
+      <div class="table-wrapper">
+        <div id="recordList" class="record-list">
+          <div class="record-empty">暂无记录，请添加</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ============================================================
+    // ======================== JavaScript ===========================
+    // ============================================================
+
+    // ---------- 配置 ----------
+    const STORAGE_KEY = "work_logs_v1";
+    const API_BASE = "/api";
+
+    // 和风天气配置（请替换为你的 Key 和城市 ID）
+    const QWEATHER_KEY = "655e6ba60f8b40e190b0bfb37fc1ae4f";
+    const QWEATHER_LOCATION = "101260204"; // 遵义城市ID
+
+    // Open-Meteo 经纬度（遵义）
+    const OPENMETEO_LAT = 27.951342;
+    const OPENMETEO_LON = 107.191025;
+
+    // 天气图标映射（和风天气 code → 图标）
+    const WEATHER_ICON_MAP = {
+      "100": "☀️",
+      "101": "⛅",
+      "102": "☁️",
+      "103": "☁️",
+      "104": "☁️",
+      "150": "🌤️",
+      "300": "🌦️",
+      "301": "🌧️",
+      "302": "⛈️",
+      "303": "⛈️",
+      "304": "🌧️",
+      "305": "🌧️",
+      "306": "🌧️",
+      "307": "🌧️",
+      "308": "🌧️",
+      "309": "🌧️",
+      "310": "🌧️",
+      "311": "🌧️",
+      "312": "🌧️",
+      "313": "🌨️",
+      "314": "🌧️",
+      "315": "🌧️",
+      "316": "🌧️",
+      "317": "🌧️",
+      "318": "🌧️",
+      "400": "❄️",
+      "401": "❄️",
+      "402": "❄️",
+      "403": "❄️",
+      "404": "🌨️",
+      "405": "🌨️",
+      "406": "🌨️",
+      "407": "🌨️",
+      "500": "🌫️",
+      "501": "🌫️",
+      "502": "🌫️",
+      "503": "🌫️",
+      "504": "🌫️",
+      "507": "🌫️",
+      "508": "🌫️",
+      "999": "❓"
+    };
+
+    const DEFAULT_ICON = "🌥️";
+
+    // ---------- DOM 引用 ----------
+    const logDate = document.getElementById("logDate");
+    const weekday = document.getElementById("weekday");
+    const weatherIcon = document.getElementById("weatherIcon");
+    const weatherText = document.getElementById("weatherText");
+    const highTemp = document.getElementById("highTemp");
+    const lowTemp = document.getElementById("lowTemp");
+    const weatherTextInput = document.getElementById("weatherTextInput");
+    const highTempInput = document.getElementById("highTempInput");
+    const lowTempInput = document.getElementById("lowTempInput");
+    const weatherStatus = document.getElementById("weatherStatus");
+    const workList = document.getElementById("workList");
+    const addWorkBtn = document.getElementById("addWorkBtn");
+    const saveLocalBtn = document.getElementById("saveLocalBtn");
+    const submitNotionBtn = document.getElementById("submitNotionBtn");
+    const exportCSVBtn = document.getElementById("exportCSVBtn");
+    const clearLocalBtn = document.getElementById("clearLocalBtn");
+    const recordList = document.getElementById("recordList");
+    const recordCount = document.getElementById("recordCount");
+    const msgEl = document.getElementById("msg");
+
+    // ---------- 消息 ----------
+    let msgTimer = null;
+
+    function setMsg(text, type = "info") {
+      if (msgTimer) clearTimeout(msgTimer);
+      msgEl.textContent = text;
+      msgEl.className = "msg show " + type;
+      msgTimer = setTimeout(() => {
+        msgEl.className = "msg";
+      }, 5000);
+    }
+
+    // ---------- 工具函数 ----------
+    function formatDate(d) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function getTodayStr() {
+      return formatDate(new Date());
+    }
+
+    function getWeekday(dateStr) {
+      const d = new Date(dateStr + "T00:00:00");
+      const days = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+      return days[d.getDay()];
+    }
+
+    function getDateDiff(dateStr) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const target = new Date(dateStr + "T00:00:00");
+      target.setHours(0, 0, 0, 0);
+      return Math.floor((target - today) / (1000 * 60 * 60 * 24));
+    }
+
+    // ---------- 本地存储 ----------
+    function getLogs() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      } catch {
+        return [];
+      }
+    }
+
+    function saveLogs(logs) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+    }
+
+    // ---------- 工作内容管理 ----------
+    let workItems = [""];
+
+    function renderWorkItems() {
+      if (workItems.length === 0) {
+        workItems = [""];
+      }
+      workList.innerHTML = "";
+      workItems.forEach((text, index) => {
+        const div = document.createElement("div");
+        div.className = "work-item";
+        div.innerHTML = `
+          <span class="index">${index + 1}</span>
+          <textarea rows="2" placeholder="输入第 ${index + 1} 项工作内容...">${text || ""}</textarea>
+          <button class="del-btn" data-index="${index}" ${workItems.length <= 1 ? 'disabled' : ''}>✕</button>
+        `;
+        workList.appendChild(div);
+
+        const textarea = div.querySelector("textarea");
+        textarea.addEventListener("input", function() {
+          workItems[index] = this.value;
+        });
+
+        const delBtn = div.querySelector(".del-btn");
+        delBtn.addEventListener("click", function() {
+          const idx = parseInt(this.dataset.index);
+          if (workItems.length <= 1) return;
+          workItems.splice(idx, 1);
+          renderWorkItems();
+        });
+      });
+    }
+
+    addWorkBtn.addEventListener("click", function() {
+      workItems.push("");
+      renderWorkItems();
+      const lastItem = workList.lastElementChild;
+      if (lastItem) {
+        lastItem.scrollIntoView({ behavior: "smooth", block: "center" });
+        const ta = lastItem.querySelector("textarea");
+        if (ta) setTimeout(() => ta.focus(), 300);
+      }
+    });
+
+    function getWorkContents() {
+      const items = [];
+      document.querySelectorAll("#workList .work-item textarea").forEach(ta => {
+        const val = ta.value.trim();
+        if (val) items.push(val);
+      });
+      return items;
+    }
+
+    // ---------- 天气获取 ----------
+    async function fetchWeather(dateStr) {
+      if (!dateStr) return null;
+
+      const diffDays = getDateDiff(dateStr);
+
+      // 当天或未来2天 → 和风天气
+      if (diffDays >= 0 && diffDays <= 2) {
+        return await fetchQWeather(dateStr, diffDays);
+      }
+
+      // 过去日期 → Open-Meteo 历史
+      if (diffDays < 0) {
+        const result = await fetchOpenMeteo(dateStr);
+        if (result) {
+          return { ...result, weatherText: "历史数据", weatherIcon: "📜" };
+        }
+        return null;
+      }
+
+      // 兜底
+      const result = await fetchOpenMeteo(dateStr);
+      if (result) {
+        return { ...result, weatherText: "历史数据", weatherIcon: "📜" };
+      }
+      return null;
+    }
+
+    // 和风天气
+    async function fetchQWeather(dateStr, diffDays) {
+      const url =
+        `https://devapi.qweather.com/v7/weather/3d?location=${QWEATHER_LOCATION}&key=${QWEATHER_KEY}`;
+      try {
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const data = await resp.json();
+        if (data.code !== "200") return null;
+
+        const daily = data.daily;
+        if (!daily || daily.length < 3) return null;
+
+        let idx = diffDays;
+        if (idx < 0 || idx > 2) idx = 0;
+        const day = daily[idx] || daily[0];
+        if (!day) return null;
+
+        const high = parseFloat(day.tempMax);
+        const low = parseFloat(day.tempMin);
+        const weatherText = day.textDay || "";
+        const iconCode = day.iconDay || "";
+        const weatherIcon = WEATHER_ICON_MAP[iconCode] || DEFAULT_ICON;
+
+        if (!isNaN(high) && !isNaN(low)) {
+          return { high, low, weatherText, weatherIcon, source: "和风天气" };
+        }
+        return null;
+      } catch (e) {
+        console.warn("和风天气获取失败:", e);
+        return null;
+      }
+    }
+
+    // Open-Meteo 历史
+    async function fetchOpenMeteo(dateStr) {
+      const url =
+        `https://archive-api.open-meteo.com/v1/archive?` +
+        `latitude=${OPENMETEO_LAT}&longitude=${OPENMETEO_LON}&` +
+        `start_date=${dateStr}&end_date=${dateStr}&` +
+        `daily=temperature_2m_max,temperature_2m_min&timezone=Asia/Shanghai`;
+      try {
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const data = await resp.json();
+        if (data.daily?.temperature_2m_max?.length > 0) {
+          const high = data.daily.temperature_2m_max[0];
+          const low = data.daily.temperature_2m_min[0];
+          if (high !== undefined && low !== undefined) {
+            return { high, low, source: "Open-Meteo历史" };
+          }
+        }
+        return null;
+      } catch (e) {
+        console.warn("Open-Meteo获取失败:", e);
+        return null;
+      }
+    }
+
+    // 自动填入天气
+    async function autoFillWeather() {
+      const dateStr = logDate.value;
+      if (!dateStr) {
+        weatherIcon.textContent = "🌥️";
+        weatherText.textContent = "--";
+        highTemp.textContent = "--";
+        lowTemp.textContent = "--";
+        weatherTextInput.value = "";
+        highTempInput.value = "";
+        lowTempInput.value = "";
+        weatherStatus.textContent = "请选择日期";
+        return;
+      }
+
+      weatherStatus.textContent = "查询中...";
+      weatherIcon.textContent = "⏳";
+      weatherText.textContent = "查询中";
+      highTemp.textContent = "--";
+      lowTemp.textContent = "--";
+
+      const result = await fetchWeather(dateStr);
+      if (result) {
+        highTemp.textContent = result.high;
+        lowTemp.textContent = result.low;
+        highTempInput.value = result.high;
+        lowTempInput.value = result.low;
+
+        if (result.weatherText) {
+          weatherText.textContent = result.weatherText;
+          weatherTextInput.value = result.weatherText;
+        } else {
+          weatherText.textContent = "--";
+          weatherTextInput.value = "";
+        }
+
+        weatherIcon.textContent = result.weatherIcon || DEFAULT_ICON;
+        weatherStatus.textContent = `✅ ${result.source}`;
+      } else {
+        weatherIcon.textContent = "❌";
+        weatherText.textContent = "获取失败";
+        highTemp.textContent = "--";
+        lowTemp.textContent = "--";
+        weatherTextInput.value = "";
+        highTempInput.value = "";
+        lowTempInput.value = "";
+        weatherStatus.textContent = "❌ 获取失败";
+      }
+    }
+
+    // ---------- 日期变化联动 ----------
+    function onDateChange() {
+      const dateStr = logDate.value;
+      if (dateStr) {
+        weekday.value = getWeekday(dateStr);
+        autoFillWeather();
+      } else {
+        weekday.value = "";
+        weatherIcon.textContent = "🌥️";
+        weatherText.textContent = "--";
+        highTemp.textContent = "--";
+        lowTemp.textContent = "--";
+        weatherTextInput.value = "";
+        highTempInput.value = "";
+        lowTempInput.value = "";
+        weatherStatus.textContent = "请选择日期";
+      }
+    }
+
+    logDate.addEventListener("change", onDateChange);
+
+    // ---------- 初始化日期 ----------
+    function initDate() {
+      const today = getTodayStr();
+      logDate.value = today;
+      weekday.value = getWeekday(today);
+      setTimeout(autoFillWeather, 300);
+    }
+
+    // ---------- 收集表单数据 ----------
+    function collectForm() {
+      return {
+        date: logDate.value || "",
+        weekday: weekday.value || "",
+        weatherText: weatherTextInput.value || "",
+        highTemp: parseFloat(highTempInput.value) || null,
+        lowTemp: parseFloat(lowTempInput.value) || null,
+        workContents: getWorkContents(),
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    // ---------- 保存本地 ----------
+    function handleSaveLocal() {
+      const data = collectForm();
+      if (!data.date) {
+        setMsg("请选择日期", "err");
+        return;
+      }
+      if (data.workContents.length === 0) {
+        setMsg("请至少填写一项工作内容", "err");
+        return;
+      }
+
+      const logs = getLogs();
+
+      // 检查是否已存在同日期记录（个人用，避免重复）
+      const existingIdx = logs.findIndex(l => l.date === data.date);
+      if (existingIdx !== -1) {
+        if (!confirm(`⚠️ ${data.date} 已有记录，是否覆盖？`)) return;
+        logs[existingIdx] = { ...data, notionPageId: logs[existingIdx]?.notionPageId || "" };
+      } else {
+        logs.push(data);
+      }
+
+      saveLogs(logs);
+      renderRecords();
+      setMsg(`✅ 已保存 ${data.workContents.length} 项工作内容`, "ok");
+    }
+
+    // ---------- 提交 Notion ----------
+    async function handleSubmitNotion() {
+      const data = collectForm();
+      if (!data.date) {
+        setMsg("请选择日期", "err");
+        return;
+      }
+      if (data.workContents.length === 0) {
+        setMsg("请至少填写一项工作内容", "err");
+        return;
+      }
+
+      // 先保存本地
+      const logs = getLogs();
+      const existingIdx = logs.findIndex(l => l.date === data.date);
+      let idx = logs.length;
+      if (existingIdx !== -1) {
+        idx = existingIdx;
+        logs[idx] = { ...data, notionPageId: logs[idx]?.notionPageId || "" };
+      } else {
+        logs.push(data);
+        idx = logs.length - 1;
+      }
+      saveLogs(logs);
+      renderRecords();
+
+      setMsg("⏳ 提交到 Notion 中...", "info");
+
+      // 构建提交数据（适配个人工作日志数据库）
+      const payload = {
+        date: data.date,
+        weatherText: data.weatherText || "",
+        highTemp: data.highTemp,
+        lowTemp: data.lowTemp,
+        workContent: data.workContents.join("\n")
+      };
+
+      try {
+        const resp = await fetch(`${API_BASE}/submit`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const result = await resp.json();
+        if (!resp.ok) {
+          setMsg(`❌ 提交失败: ${result.error || resp.statusText}`, "err");
+          return;
+        }
+        const latest = getLogs();
+        if (latest[idx]) {
+          latest[idx].notionPageId = result.pageId || "";
+          saveLogs(latest);
+          renderRecords();
+        }
+        setMsg(`✅ 提交成功！页面ID: ${result.pageId || "已创建"}`, "ok");
+      } catch (e) {
+        setMsg(`❌ 网络错误: ${e.message}`, "err");
+      }
+    }
+
+    // ---------- 导出 CSV ----------
+    function handleExportCSV() {
+      const logs = getLogs();
+      if (logs.length === 0) {
+        setMsg("暂无记录可导出", "err");
+        return;
+      }
+
+      const headers = ["日期", "星期", "天气", "最高气温", "最低气温", "工作内容", "Notion页面ID"];
+      const lines = [headers.join(",")];
+
+      for (const r of logs) {
+        const content = (r.workContents || []).join("; ").replace(/\n/g, " ");
+        const row = [
+          r.date || "",
+          r.weekday || "",
+          r.weatherText || "",
+          r.highTemp ?? "",
+          r.lowTemp ?? "",
+          `"${content.replace(/"/g, '""')}"`,
+          r.notionPageId || ""
+        ];
+        lines.push(row.join(","));
+      }
+
+      const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `工作日志_${getTodayStr()}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      setMsg("📤 CSV 导出完成", "ok");
+    }
+
+    // ---------- 清空本地 ----------
+    function handleClearLocal() {
+      if (confirm("⚠️ 确定清空所有本地记录？此操作不可撤销！")) {
+        saveLogs([]);
+        renderRecords();
+        setMsg("已清空所有本地记录", "ok");
+      }
+    }
+
+    // ---------- 渲染历史记录 ----------
+    function renderRecords() {
+      const logs = getLogs();
+      recordCount.textContent = `共 ${logs.length} 条`;
+
+      if (logs.length === 0) {
+        recordList.innerHTML = `<div class="record-empty">暂无记录，请添加</div>`;
+        return;
+      }
+
+      // 按日期倒序排列（最新的在前）
+      const sorted = [...logs].reverse();
+
+      recordList.innerHTML = "";
+      sorted.forEach((r) => {
+        const div = document.createElement("div");
+        div.className = "record-card";
+
+        const contentHtml = (r.workContents || []).map(c =>
+          `<div style="padding:2px 0;">• ${c}</div>`
+        ).join("");
+
+        const weatherDisplay = r.weatherText ?
+          `<span class="weather-tag">${r.weatherText}</span>` :
+          "—";
+
+        div.innerHTML = `
+          <div class="row">
+            <span class="label">📅</span>
+            <span class="value"><strong>${r.date || "—"}</strong> ${r.weekday || ""}</span>
+          </div>
+          <div class="row">
+            <span class="label">🌤️</span>
+            <span class="value">${weatherDisplay} 最高 ${r.highTemp ?? "—"}°C / 最低 ${r.lowTemp ?? "—"}°C</span>
+          </div>
+          <div class="row">
+            <span class="label">📝</span>
+            <span class="value work-content">${contentHtml || "（无内容）"}</span>
+          </div>
+          ${r.notionPageId ? `<div class="row"><span class="label">🔗</span><span class="value" style="font-size:12px;color:#94a3b8;">已同步: ${r.notionPageId}</span></div>` : ''}
+        `;
+        recordList.appendChild(div);
+      });
+    }
+
+    // ---------- 绑定按钮事件 ----------
+    saveLocalBtn.addEventListener("click", handleSaveLocal);
+    submitNotionBtn.addEventListener("click", handleSubmitNotion);
+    exportCSVBtn.addEventListener("click", handleExportCSV);
+    clearLocalBtn.addEventListener("click", handleClearLocal);
+
+    // ---------- 启动 ----------
+    initDate();
+    renderWorkItems();
+    renderRecords();
+
+    if (!logDate.value) {
+      logDate.value = getTodayStr();
+      onDateChange();
+    }
+
+    console.log("📋 工作日志已加载");
+    console.log(`📊 本地记录: ${getLogs().length} 条`);
+  </script>
+
+</body>
+</html>

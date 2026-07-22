@@ -1,0 +1,16 @@
+{
+  "name": "worklog-notion-serverless",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "个人工作日志 - Notion 自动备份",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.2.14"
+  },
+  "keywords": ["notion", "worklog", "serverless", "vercel"],
+  "author": "",
+  "license": "MIT"
+}
