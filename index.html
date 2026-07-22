@@ -25,7 +25,6 @@
       margin: 0 auto;
     }
 
-    /* ===== 标题 ===== */
     .app-header {
       display: flex;
       align-items: center;
@@ -50,7 +49,6 @@
       border-radius: 20px;
     }
 
-    /* ===== 卡片 ===== */
     .card {
       background: #ffffff;
       border-radius: 16px;
@@ -74,7 +72,6 @@
       font-size: 18px;
     }
 
-    /* ===== 表单行 ===== */
     .form-row {
       display: flex;
       flex-wrap: wrap;
@@ -129,7 +126,6 @@
       font-size: 13px;
     }
 
-    /* ===== 天气显示 ===== */
     .weather-display {
       display: flex;
       align-items: center;
@@ -181,7 +177,6 @@
       margin-left: 4px;
     }
 
-    /* ===== 工作内容列表 ===== */
     .work-list {
       margin-top: 4px;
     }
@@ -263,7 +258,6 @@
       transform: none;
     }
 
-    /* ===== 操作按钮组 ===== */
     .btn-group {
       display: flex;
       flex-wrap: wrap;
@@ -340,7 +334,6 @@
       flex: 0 1 auto;
     }
 
-    /* ===== 消息提示 ===== */
     .msg {
       margin-top: 12px;
       padding: 10px 14px;
@@ -367,13 +360,6 @@
       background: #dbeafe;
       color: #1e40af;
       border: 1px solid #bfdbfe;
-    }
-
-    /* ===== 历史记录（移动端卡片列表） ===== */
-    .table-wrapper {
-      margin-top: 8px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
     }
 
     .record-list {
@@ -435,48 +421,39 @@
       font-size: 14px;
     }
 
-    /* ===== 移动端适配 ===== */
     @media (max-width: 480px) {
       body {
         padding: 12px;
         padding-bottom: 60px;
       }
-
       .app-header h1 {
         font-size: 20px;
       }
-
       .card {
         padding: 14px 14px;
         border-radius: 12px;
       }
-
       .form-row .field {
         flex: 1 1 100%;
         min-width: unset;
       }
-
       .btn {
         font-size: 13px;
         padding: 10px 14px;
         flex: 1 1 calc(50% - 5px);
       }
-
       .work-item textarea {
         font-size: 14px;
         min-height: 44px;
       }
-
       .record-card {
         font-size: 13px;
         padding: 10px 12px;
       }
-
       .weather-display .temp-item {
         font-size: 13px;
         padding: 3px 12px 3px 8px;
       }
-
       .weather-display .weather-icon {
         font-size: 24px;
         min-width: 30px;
@@ -491,7 +468,6 @@
       }
     }
 
-    /* ===== 打印样式 ===== */
     @media print {
       .btn-group,
       .btn {
@@ -508,19 +484,16 @@
 
   <div class="container">
 
-    <!-- ===== 标题 ===== -->
     <div class="app-header">
       <h1>📋 工作日志</h1>
       <span class="badge">个人版</span>
     </div>
 
-    <!-- ===== 表单卡片 ===== -->
     <div class="card">
       <div class="card-title">
         <span class="icon">✏️</span> 填写日志
       </div>
 
-      <!-- 日期 + 星期 -->
       <div class="form-row">
         <div class="field">
           <label for="logDate">📅 日期</label>
@@ -532,7 +505,6 @@
         </div>
       </div>
 
-      <!-- 天气（含天气状态） -->
       <div class="form-row">
         <div class="field full">
           <label>🌤️ 天气</label>
@@ -547,28 +519,23 @@
             </div>
             <span class="weather-status" id="weatherStatus">自动获取中...</span>
           </div>
-          <!-- 隐藏字段用于提交 -->
           <input type="hidden" id="weatherTextInput" />
           <input type="hidden" id="highTempInput" />
           <input type="hidden" id="lowTempInput" />
         </div>
       </div>
 
-      <!-- 工作内容（动态行） -->
       <div style="margin-top: 12px;">
         <label style="font-size:13px;font-weight:500;color:#475569;display:block;margin-bottom:6px;">
           📝 工作内容
           <span style="font-weight:400;color:#94a3b8;font-size:12px;">（点击下方按钮添加）</span>
         </label>
-        <div class="work-list" id="workList">
-          <!-- 由 JS 动态渲染 -->
-        </div>
+        <div class="work-list" id="workList"></div>
         <button class="btn btn-outline btn-sm" id="addWorkBtn" style="margin-top:6px;width:100%;">
           ＋ 添加工作内容
         </button>
       </div>
 
-      <!-- 操作按钮 -->
       <div class="btn-group">
         <button class="btn btn-primary" id="saveLocalBtn">💾 保存本地</button>
         <button class="btn btn-success" id="submitNotionBtn">🚀 提交 Notion</button>
@@ -576,20 +543,16 @@
         <button class="btn btn-danger" id="clearLocalBtn">🗑️ 清空本地</button>
       </div>
 
-      <!-- 消息 -->
       <div id="msg" class="msg"></div>
     </div>
 
-    <!-- ===== 历史记录卡片 ===== -->
     <div class="card">
       <div class="card-title">
         <span class="icon">📂</span> 历史记录
         <span style="font-weight:400;color:#94a3b8;font-size:13px;margin-left:auto;" id="recordCount">共 0 条</span>
       </div>
-      <div class="table-wrapper">
-        <div id="recordList" class="record-list">
-          <div class="record-empty">暂无记录，请添加</div>
-        </div>
+      <div id="recordList" class="record-list">
+        <div class="record-empty">暂无记录，请添加</div>
       </div>
     </div>
 
@@ -600,66 +563,28 @@
     // ======================== JavaScript ===========================
     // ============================================================
 
-    // ---------- 配置 ----------
     const STORAGE_KEY = "work_logs_v1";
     const API_BASE = "/api";
 
-    // 和风天气配置（请替换为你的 Key 和城市 ID）
     const QWEATHER_KEY = "655e6ba60f8b40e190b0bfb37fc1ae4f";
-    const QWEATHER_LOCATION = "101260204"; // 遵义城市ID
-
-    // Open-Meteo 经纬度（遵义）
+    const QWEATHER_LOCATION = "101260204";
     const OPENMETEO_LAT = 27.951342;
     const OPENMETEO_LON = 107.191025;
 
-    // 天气图标映射（和风天气 code → 图标）
     const WEATHER_ICON_MAP = {
-      "100": "☀️",
-      "101": "⛅",
-      "102": "☁️",
-      "103": "☁️",
-      "104": "☁️",
-      "150": "🌤️",
-      "300": "🌦️",
-      "301": "🌧️",
-      "302": "⛈️",
-      "303": "⛈️",
-      "304": "🌧️",
-      "305": "🌧️",
-      "306": "🌧️",
-      "307": "🌧️",
-      "308": "🌧️",
-      "309": "🌧️",
-      "310": "🌧️",
-      "311": "🌧️",
-      "312": "🌧️",
-      "313": "🌨️",
-      "314": "🌧️",
-      "315": "🌧️",
-      "316": "🌧️",
-      "317": "🌧️",
-      "318": "🌧️",
-      "400": "❄️",
-      "401": "❄️",
-      "402": "❄️",
-      "403": "❄️",
-      "404": "🌨️",
-      "405": "🌨️",
-      "406": "🌨️",
-      "407": "🌨️",
-      "500": "🌫️",
-      "501": "🌫️",
-      "502": "🌫️",
-      "503": "🌫️",
-      "504": "🌫️",
-      "507": "🌫️",
-      "508": "🌫️",
-      "999": "❓"
+      "100": "☀️", "101": "⛅", "102": "☁️", "103": "☁️", "104": "☁️", "150": "🌤️",
+      "300": "🌦️", "301": "🌧️", "302": "⛈️", "303": "⛈️", "304": "🌧️",
+      "305": "🌧️", "306": "🌧️", "307": "🌧️", "308": "🌧️", "309": "🌧️",
+      "310": "🌧️", "311": "🌧️", "312": "🌧️", "313": "🌨️", "314": "🌧️",
+      "315": "🌧️", "316": "🌧️", "317": "🌧️", "318": "🌧️",
+      "400": "❄️", "401": "❄️", "402": "❄️", "403": "❄️",
+      "404": "🌨️", "405": "🌨️", "406": "🌨️", "407": "🌨️",
+      "500": "🌫️", "501": "🌫️", "502": "🌫️", "503": "🌫️", "504": "🌫️",
+      "507": "🌫️", "508": "🌫️", "999": "❓"
     };
-
     const DEFAULT_ICON = "🌥️";
 
-    // ---------- DOM 引用 ----------
+    // DOM 引用
     const logDate = document.getElementById("logDate");
     const weekday = document.getElementById("weekday");
     const weatherIcon = document.getElementById("weatherIcon");
@@ -680,19 +605,15 @@
     const recordCount = document.getElementById("recordCount");
     const msgEl = document.getElementById("msg");
 
-    // ---------- 消息 ----------
     let msgTimer = null;
 
     function setMsg(text, type = "info") {
       if (msgTimer) clearTimeout(msgTimer);
       msgEl.textContent = text;
       msgEl.className = "msg show " + type;
-      msgTimer = setTimeout(() => {
-        msgEl.className = "msg";
-      }, 5000);
+      msgTimer = setTimeout(() => { msgEl.className = "msg"; }, 5000);
     }
 
-    // ---------- 工具函数 ----------
     function formatDate(d) {
       const y = d.getFullYear();
       const m = String(d.getMonth() + 1).padStart(2, "0");
@@ -718,26 +639,18 @@
       return Math.floor((target - today) / (1000 * 60 * 60 * 24));
     }
 
-    // ---------- 本地存储 ----------
     function getLogs() {
-      try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-      } catch {
-        return [];
-      }
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch { return []; }
     }
 
     function saveLogs(logs) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
     }
 
-    // ---------- 工作内容管理 ----------
     let workItems = [""];
 
     function renderWorkItems() {
-      if (workItems.length === 0) {
-        workItems = [""];
-      }
+      if (workItems.length === 0) workItems = [""];
       workList.innerHTML = "";
       workItems.forEach((text, index) => {
         const div = document.createElement("div");
@@ -748,12 +661,8 @@
           <button class="del-btn" data-index="${index}" ${workItems.length <= 1 ? 'disabled' : ''}>✕</button>
         `;
         workList.appendChild(div);
-
         const textarea = div.querySelector("textarea");
-        textarea.addEventListener("input", function() {
-          workItems[index] = this.value;
-        });
-
+        textarea.addEventListener("input", function() { workItems[index] = this.value; });
         const delBtn = div.querySelector(".del-btn");
         delBtn.addEventListener("click", function() {
           const idx = parseInt(this.dataset.index);
@@ -784,58 +693,40 @@
       return items;
     }
 
-    // ---------- 天气获取 ----------
     async function fetchWeather(dateStr) {
       if (!dateStr) return null;
-
       const diffDays = getDateDiff(dateStr);
-
-      // 当天或未来2天 → 和风天气
       if (diffDays >= 0 && diffDays <= 2) {
         return await fetchQWeather(dateStr, diffDays);
       }
-
-      // 过去日期 → Open-Meteo 历史
       if (diffDays < 0) {
         const result = await fetchOpenMeteo(dateStr);
-        if (result) {
-          return { ...result, weatherText: "历史数据", weatherIcon: "📜" };
-        }
+        if (result) return { ...result, weatherText: "历史数据", weatherIcon: "📜" };
         return null;
       }
-
-      // 兜底
       const result = await fetchOpenMeteo(dateStr);
-      if (result) {
-        return { ...result, weatherText: "历史数据", weatherIcon: "📜" };
-      }
+      if (result) return { ...result, weatherText: "历史数据", weatherIcon: "📜" };
       return null;
     }
 
-    // 和风天气
     async function fetchQWeather(dateStr, diffDays) {
-      const url =
-        `https://devapi.qweather.com/v7/weather/3d?location=${QWEATHER_LOCATION}&key=${QWEATHER_KEY}`;
+      const url = `https://devapi.qweather.com/v7/weather/3d?location=${QWEATHER_LOCATION}&key=${QWEATHER_KEY}`;
       try {
         const resp = await fetch(url);
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const data = await resp.json();
         if (data.code !== "200") return null;
-
         const daily = data.daily;
         if (!daily || daily.length < 3) return null;
-
         let idx = diffDays;
         if (idx < 0 || idx > 2) idx = 0;
         const day = daily[idx] || daily[0];
         if (!day) return null;
-
         const high = parseFloat(day.tempMax);
         const low = parseFloat(day.tempMin);
         const weatherText = day.textDay || "";
         const iconCode = day.iconDay || "";
         const weatherIcon = WEATHER_ICON_MAP[iconCode] || DEFAULT_ICON;
-
         if (!isNaN(high) && !isNaN(low)) {
           return { high, low, weatherText, weatherIcon, source: "和风天气" };
         }
@@ -846,13 +737,8 @@
       }
     }
 
-    // Open-Meteo 历史
     async function fetchOpenMeteo(dateStr) {
-      const url =
-        `https://archive-api.open-meteo.com/v1/archive?` +
-        `latitude=${OPENMETEO_LAT}&longitude=${OPENMETEO_LON}&` +
-        `start_date=${dateStr}&end_date=${dateStr}&` +
-        `daily=temperature_2m_max,temperature_2m_min&timezone=Asia/Shanghai`;
+      const url = `https://archive-api.open-meteo.com/v1/archive?latitude=${OPENMETEO_LAT}&longitude=${OPENMETEO_LON}&start_date=${dateStr}&end_date=${dateStr}&daily=temperature_2m_max,temperature_2m_min&timezone=Asia/Shanghai`;
       try {
         const resp = await fetch(url);
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
@@ -871,7 +757,6 @@
       }
     }
 
-    // 自动填入天气
     async function autoFillWeather() {
       const dateStr = logDate.value;
       if (!dateStr) {
@@ -885,20 +770,17 @@
         weatherStatus.textContent = "请选择日期";
         return;
       }
-
       weatherStatus.textContent = "查询中...";
       weatherIcon.textContent = "⏳";
       weatherText.textContent = "查询中";
       highTemp.textContent = "--";
       lowTemp.textContent = "--";
-
       const result = await fetchWeather(dateStr);
       if (result) {
         highTemp.textContent = result.high;
         lowTemp.textContent = result.low;
         highTempInput.value = result.high;
         lowTempInput.value = result.low;
-
         if (result.weatherText) {
           weatherText.textContent = result.weatherText;
           weatherTextInput.value = result.weatherText;
@@ -906,7 +788,6 @@
           weatherText.textContent = "--";
           weatherTextInput.value = "";
         }
-
         weatherIcon.textContent = result.weatherIcon || DEFAULT_ICON;
         weatherStatus.textContent = `✅ ${result.source}`;
       } else {
@@ -921,7 +802,6 @@
       }
     }
 
-    // ---------- 日期变化联动 ----------
     function onDateChange() {
       const dateStr = logDate.value;
       if (dateStr) {
@@ -942,7 +822,6 @@
 
     logDate.addEventListener("change", onDateChange);
 
-    // ---------- 初始化日期 ----------
     function initDate() {
       const today = getTodayStr();
       logDate.value = today;
@@ -950,8 +829,17 @@
       setTimeout(autoFillWeather, 300);
     }
 
-    // ---------- 收集表单数据 ----------
     function collectForm() {
+      const now = new Date();
+      const submittedAt = now.toLocaleString("zh-CN", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      });
       return {
         date: logDate.value || "",
         weekday: weekday.value || "",
@@ -959,25 +847,16 @@
         highTemp: parseFloat(highTempInput.value) || null,
         lowTemp: parseFloat(lowTempInput.value) || null,
         workContents: getWorkContents(),
-        createdAt: new Date().toISOString()
+        submittedAt: submittedAt,
+        createdAt: now.toISOString()
       };
     }
 
-    // ---------- 保存本地 ----------
     function handleSaveLocal() {
       const data = collectForm();
-      if (!data.date) {
-        setMsg("请选择日期", "err");
-        return;
-      }
-      if (data.workContents.length === 0) {
-        setMsg("请至少填写一项工作内容", "err");
-        return;
-      }
-
+      if (!data.date) { setMsg("请选择日期", "err"); return; }
+      if (data.workContents.length === 0) { setMsg("请至少填写一项工作内容", "err"); return; }
       const logs = getLogs();
-
-      // 检查是否已存在同日期记录（个人用，避免重复）
       const existingIdx = logs.findIndex(l => l.date === data.date);
       if (existingIdx !== -1) {
         if (!confirm(`⚠️ ${data.date} 已有记录，是否覆盖？`)) return;
@@ -985,25 +864,16 @@
       } else {
         logs.push(data);
       }
-
       saveLogs(logs);
       renderRecords();
       setMsg(`✅ 已保存 ${data.workContents.length} 项工作内容`, "ok");
     }
 
-    // ---------- 提交 Notion ----------
     async function handleSubmitNotion() {
       const data = collectForm();
-      if (!data.date) {
-        setMsg("请选择日期", "err");
-        return;
-      }
-      if (data.workContents.length === 0) {
-        setMsg("请至少填写一项工作内容", "err");
-        return;
-      }
+      if (!data.date) { setMsg("请选择日期", "err"); return; }
+      if (data.workContents.length === 0) { setMsg("请至少填写一项工作内容", "err"); return; }
 
-      // 先保存本地
       const logs = getLogs();
       const existingIdx = logs.findIndex(l => l.date === data.date);
       let idx = logs.length;
@@ -1019,13 +889,14 @@
 
       setMsg("⏳ 提交到 Notion 中...", "info");
 
-      // 构建提交数据（适配个人工作日志数据库）
       const payload = {
         date: data.date,
+        weekday: data.weekday,
         weatherText: data.weatherText || "",
         highTemp: data.highTemp,
         lowTemp: data.lowTemp,
-        workContent: data.workContents.join("\n")
+        workContent: data.workContents.join("\n"),
+        submittedAt: data.submittedAt
       };
 
       try {
@@ -1051,31 +922,22 @@
       }
     }
 
-    // ---------- 导出 CSV ----------
     function handleExportCSV() {
       const logs = getLogs();
-      if (logs.length === 0) {
-        setMsg("暂无记录可导出", "err");
-        return;
-      }
-
-      const headers = ["日期", "星期", "天气", "最高气温", "最低气温", "工作内容", "Notion页面ID"];
+      if (logs.length === 0) { setMsg("暂无记录可导出", "err"); return; }
+      const headers = ["日期", "星期", "天气", "最高气温", "最低气温", "工作内容", "提交时间", "Notion页面ID"];
       const lines = [headers.join(",")];
-
       for (const r of logs) {
         const content = (r.workContents || []).join("; ").replace(/\n/g, " ");
         const row = [
-          r.date || "",
-          r.weekday || "",
-          r.weatherText || "",
-          r.highTemp ?? "",
-          r.lowTemp ?? "",
+          r.date || "", r.weekday || "", r.weatherText || "",
+          r.highTemp ?? "", r.lowTemp ?? "",
           `"${content.replace(/"/g, '""')}"`,
+          r.submittedAt || "",
           r.notionPageId || ""
         ];
         lines.push(row.join(","));
       }
-
       const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -1088,7 +950,6 @@
       setMsg("📤 CSV 导出完成", "ok");
     }
 
-    // ---------- 清空本地 ----------
     function handleClearLocal() {
       if (confirm("⚠️ 确定清空所有本地记录？此操作不可撤销！")) {
         saveLogs([]);
@@ -1097,32 +958,23 @@
       }
     }
 
-    // ---------- 渲染历史记录 ----------
     function renderRecords() {
       const logs = getLogs();
       recordCount.textContent = `共 ${logs.length} 条`;
-
       if (logs.length === 0) {
         recordList.innerHTML = `<div class="record-empty">暂无记录，请添加</div>`;
         return;
       }
-
-      // 按日期倒序排列（最新的在前）
       const sorted = [...logs].reverse();
-
       recordList.innerHTML = "";
       sorted.forEach((r) => {
         const div = document.createElement("div");
         div.className = "record-card";
-
         const contentHtml = (r.workContents || []).map(c =>
           `<div style="padding:2px 0;">• ${c}</div>`
         ).join("");
-
         const weatherDisplay = r.weatherText ?
-          `<span class="weather-tag">${r.weatherText}</span>` :
-          "—";
-
+          `<span class="weather-tag">${r.weatherText}</span>` : "—";
         div.innerHTML = `
           <div class="row">
             <span class="label">📅</span>
@@ -1136,23 +988,21 @@
             <span class="label">📝</span>
             <span class="value work-content">${contentHtml || "（无内容）"}</span>
           </div>
+          ${r.submittedAt ? `<div class="row"><span class="label">⏱️</span><span class="value" style="font-size:12px;color:#94a3b8;">提交时间: ${r.submittedAt}</span></div>` : ''}
           ${r.notionPageId ? `<div class="row"><span class="label">🔗</span><span class="value" style="font-size:12px;color:#94a3b8;">已同步: ${r.notionPageId}</span></div>` : ''}
         `;
         recordList.appendChild(div);
       });
     }
 
-    // ---------- 绑定按钮事件 ----------
     saveLocalBtn.addEventListener("click", handleSaveLocal);
     submitNotionBtn.addEventListener("click", handleSubmitNotion);
     exportCSVBtn.addEventListener("click", handleExportCSV);
     clearLocalBtn.addEventListener("click", handleClearLocal);
 
-    // ---------- 启动 ----------
     initDate();
     renderWorkItems();
     renderRecords();
-
     if (!logDate.value) {
       logDate.value = getTodayStr();
       onDateChange();
