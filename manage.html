@@ -18,7 +18,7 @@
       color: #1e293b;
     }
     .container {
-      max-width: 900px;
+      max-width: 1200px;
       margin: 0 auto;
     }
     .header {
@@ -47,6 +47,7 @@
       flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 16px;
+      align-items: center;
     }
     .toolbar input,
     .toolbar select {
@@ -55,7 +56,7 @@
       border-radius: 10px;
       font-size: 14px;
       background: #fff;
-      flex: 1 1 180px;
+      flex: 1 1 160px;
     }
     .toolbar .btn {
       padding: 8px 18px;
@@ -83,7 +84,43 @@
       background: #22c55e;
       color: #fff;
     }
-    .record-card {
+    .toolbar .btn-purple {
+      background: #8b5cf6;
+      color: #fff;
+    }
+    .toolbar .btn-warning {
+      background: #f59e0b;
+      color: #fff;
+    }
+    .toolbar .view-toggle {
+      display: flex;
+      gap: 4px;
+      background: #e2e8f0;
+      border-radius: 10px;
+      padding: 3px;
+    }
+    .toolbar .view-toggle .btn-view {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      background: transparent;
+      color: #64748b;
+      transition: all 0.2s;
+    }
+    .toolbar .view-toggle .btn-view.active {
+      background: #fff;
+      color: #1e293b;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .toolbar .view-toggle .btn-view:active {
+      transform: scale(0.94);
+    }
+
+    /* ===== 列表视图 ===== */
+    .view-list .record-card {
       background: #fff;
       border-radius: 12px;
       padding: 14px 16px;
@@ -93,12 +130,46 @@
       flex-wrap: wrap;
       align-items: flex-start;
       gap: 8px 16px;
-      transition: all 0.2s;
     }
-    .record-card .info {
+    .view-list .record-card .info {
       flex: 1;
       min-width: 200px;
     }
+
+    /* ===== 网格视图 ===== */
+    .view-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+    .view-grid .record-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px 18px;
+      border: 1px solid #eef2f6;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.2s;
+      height: fit-content;
+    }
+    .view-grid .record-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    .view-grid .record-card .info {
+      flex: 1;
+    }
+    .view-grid .record-card .actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 4px;
+      padding-top: 8px;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    /* ===== 记录卡片通用样式 ===== */
     .record-card .info .date {
       font-weight: 700;
       font-size: 16px;
@@ -121,11 +192,31 @@
       font-size: 13px;
       margin-right: 6px;
     }
-    .record-card .actions {
+    .record-card .info .work-content-full {
+      font-size: 14px;
+      color: #1e293b;
+      background: #f8fafc;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-top: 6px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.7;
+      border-left: 3px solid #3b82f6;
+    }
+    .record-card .info .work-content-full .work-item-line {
+      padding: 2px 0;
       display: flex;
       gap: 6px;
-      flex-wrap: wrap;
-      align-items: center;
+    }
+    .record-card .info .work-content-full .work-item-line .bullet {
+      color: #3b82f6;
+      font-weight: 700;
+    }
+    .record-card .info .meta {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 2px;
     }
     .record-card .actions .btn-sm {
       padding: 4px 12px;
@@ -158,6 +249,15 @@
       padding: 2px 10px;
       border-radius: 12px;
     }
+    .record-card .actions .badge.local {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    .record-card .actions .badge.notion {
+      background: #dcfce7;
+      color: #166534;
+    }
+
     .empty {
       text-align: center;
       color: #94a3b8;
@@ -188,21 +288,77 @@
       color: #1e40af;
       border: 1px solid #bfdbfe;
     }
-    @media (max-width: 480px) {
-      .record-card {
-        flex-direction: column;
+    .msg.warning {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .loading-overlay.show {
+      display: flex;
+    }
+    .loading-overlay .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #fff;
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .loading-overlay .text {
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
       }
-      .record-card .actions {
-        width: 100%;
-        justify-content: flex-start;
+    }
+
+    @media (max-width: 640px) {
+      .view-grid {
+        grid-template-columns: 1fr;
       }
       .toolbar input {
         flex: 1 1 100%;
+      }
+      .toolbar .view-toggle {
+        width: 100%;
+        justify-content: center;
+      }
+      .record-card .actions {
+        flex-wrap: wrap;
+      }
+    }
+    @media (min-width: 641px) and (max-width: 960px) {
+      .view-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>
 </head>
 <body>
+
+  <!-- ===== 加载遮罩 ===== -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="text" id="loadingText">加载中...</div>
+  </div>
 
   <div class="container">
     <div class="header">
@@ -217,12 +373,22 @@
       <input type="text" id="searchText" placeholder="搜索工作内容..." />
       <button class="btn btn-primary" id="searchBtn">🔍 搜索</button>
       <button class="btn" id="resetBtn">↻ 重置</button>
+
+      <!-- 视图切换 -->
+      <div class="view-toggle">
+        <button class="btn-view active" data-view="list" id="viewListBtn">📋 列表</button>
+        <button class="btn-view" data-view="grid" id="viewGridBtn">📊 网格</button>
+      </div>
+
       <button class="btn btn-success" id="syncAllBtn">📤 全部同步</button>
+      <button class="btn btn-purple" id="importNotionBtn">📥 从 Notion 导入</button>
       <button class="btn btn-danger" id="clearAllBtn">🗑️ 清空所有</button>
       <a href="/" style="text-decoration:none;"><button class="btn">📝 写日志</button></a>
     </div>
 
-    <div id="recordList"></div>
+    <div id="recordContainer">
+      <div id="recordList" class="view-list"></div>
+    </div>
   </div>
 
   <script>
@@ -230,13 +396,27 @@
     const API_BASE = "/api";
 
     const msgEl = document.getElementById("msg");
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    const loadingText = document.getElementById("loadingText");
+    const recordList = document.getElementById("recordList");
+    const recordContainer = document.getElementById("recordContainer");
     let msgTimer = null;
+    let currentView = "list";
 
     function setMsg(text, type = "info") {
       if (msgTimer) clearTimeout(msgTimer);
       msgEl.textContent = text;
       msgEl.className = "msg show " + type;
       msgTimer = setTimeout(() => { msgEl.className = "msg"; }, 4000);
+    }
+
+    function showLoading(text = "加载中...") {
+      loadingText.textContent = text;
+      loadingOverlay.classList.add("show");
+    }
+
+    function hideLoading() {
+      loadingOverlay.classList.remove("show");
     }
 
     function getLogs() {
@@ -247,29 +427,42 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
     }
 
+    // ===== 渲染工作内容（完整显示） =====
+    function renderWorkContent(workContents) {
+      if (!workContents || workContents.length === 0) {
+        return '<div style="color:#94a3b8;font-size:13px;">（无内容）</div>';
+      }
+      return workContents.map(c =>
+        `<div class="work-item-line"><span class="bullet">•</span> ${c}</div>`
+      ).join("");
+    }
+
+    // ===== 渲染记录 =====
     function renderRecords(filterFn) {
       const logs = getLogs();
-      const container = document.getElementById("recordList");
       document.getElementById("stats").textContent = `共 ${logs.length} 条`;
 
       let filtered = logs;
       if (filterFn) filtered = logs.filter(filterFn);
-      // 按日期倒序
       filtered = filtered.sort((a, b) => (a.date < b.date ? 1 : -1));
 
       if (filtered.length === 0) {
-        container.innerHTML = `<div class="empty">📭 暂无记录</div>`;
+        recordList.innerHTML = `<div class="empty">📭 暂无记录</div>`;
         return;
       }
 
-      container.innerHTML = "";
+      // 根据视图决定容器类
+      recordList.className = currentView === "grid" ? "view-grid" : "view-list";
+
+      recordList.innerHTML = "";
       filtered.forEach((r, idx) => {
         const realIdx = logs.indexOf(r);
-        const content = (r.workContents || []).join("；") || "（无内容）";
         const synced = r.notionPageId ? true : false;
+        const workContentHtml = renderWorkContent(r.workContents);
 
         const div = document.createElement("div");
         div.className = "record-card";
+
         div.innerHTML = `
           <div class="info">
             <div class="date">
@@ -278,25 +471,26 @@
             </div>
             <div class="detail">
               <span class="tag">${r.weatherText || "—"} ${r.highTemp ? r.highTemp + "°C" : ""}${r.lowTemp ? "/" + r.lowTemp + "°C" : ""}</span>
-              ${content.length > 30 ? content.slice(0, 30) + "..." : content}
             </div>
-            ${r.submittedAt ? `<div style="font-size:12px;color:#94a3b8;margin-top:2px;">⏱️ ${r.submittedAt}</div>` : ""}
+            <div class="work-content-full">
+              ${workContentHtml}
+            </div>
+            ${r.submittedAt ? `<div class="meta">⏱️ 提交时间：${r.submittedAt}</div>` : ""}
+            ${r._importedFrom ? `<div class="meta" style="color:#8b5cf6;">📥 来自 Notion</div>` : ""}
           </div>
           <div class="actions">
-            ${synced ? `<span class="badge">✅ 已同步</span>` : `<span class="badge">⏳ 未同步</span>`}
+            ${synced ? `<span class="badge notion">✅ 已同步</span>` : `<span class="badge local">📁 仅本地</span>`}
             <button class="btn-sm sync" data-idx="${realIdx}">${synced ? "🔄 重传" : "📤 同步"}</button>
             <button class="btn-sm del" data-idx="${realIdx}">🗑️ 删除</button>
           </div>
         `;
-        container.appendChild(div);
+        recordList.appendChild(div);
 
-        // 同步按钮
         div.querySelector(".sync").addEventListener("click", function() {
           const idx = parseInt(this.dataset.idx);
           syncOne(idx);
         });
 
-        // 删除按钮
         div.querySelector(".del").addEventListener("click", function() {
           const idx = parseInt(this.dataset.idx);
           if (confirm(`确定删除 ${logs[idx]?.date || "这条"} 记录吗？`)) {
@@ -309,6 +503,21 @@
         });
       });
     }
+
+    // ===== 视图切换 =====
+    function setView(view) {
+      currentView = view;
+      document.getElementById("viewListBtn").className = "btn-view" + (view === "list" ? " active" : "");
+      document.getElementById("viewGridBtn").className = "btn-view" + (view === "grid" ? " active" : "");
+      renderRecords(getFilter());
+    }
+
+    document.getElementById("viewListBtn").addEventListener("click", function() {
+      setView("list");
+    });
+    document.getElementById("viewGridBtn").addEventListener("click", function() {
+      setView("grid");
+    });
 
     // ===== 单条同步 =====
     async function syncOne(idx) {
@@ -342,6 +551,7 @@
         const latest = getLogs();
         if (latest[idx]) {
           latest[idx].notionPageId = result.pageId || "";
+          if (latest[idx]._importedFrom) delete latest[idx]._importedFrom;
           saveLogs(latest);
           renderRecords(getFilter());
         }
@@ -361,8 +571,8 @@
       }
       if (!confirm(`确定同步 ${unsynced.length} 条未同步记录吗？`)) return;
 
-      let success = 0,
-        fail = 0;
+      showLoading(`正在同步 ${unsynced.length} 条记录...`);
+      let success = 0, fail = 0;
       for (let i = 0; i < logs.length; i++) {
         const r = logs[i];
         if (r.notionPageId) continue;
@@ -386,6 +596,7 @@
             const latest = getLogs();
             if (latest[i]) {
               latest[i].notionPageId = result.pageId || "";
+              if (latest[i]._importedFrom) delete latest[i]._importedFrom;
               saveLogs(latest);
             }
             success++;
@@ -395,14 +606,130 @@
         } catch (e) {
           fail++;
         }
-        // 更新进度（每5条刷新一次）
-        if (i % 5 === 0 || i === logs.length - 1) {
+        if ((i + 1) % 3 === 0 || i === logs.length - 1) {
           renderRecords(getFilter());
-          setMsg(`⏳ 同步进度: ${i + 1}/${logs.length}`, "info");
         }
       }
+      hideLoading();
       renderRecords(getFilter());
       setMsg(`✅ 同步完成！成功 ${success} 条${fail ? `，失败 ${fail} 条` : ""}`, fail ? "err" : "ok");
+    }
+
+    // ===== 从 Notion 导入 =====
+    async function importFromNotion() {
+      const localLogs = getLogs();
+      let shouldProceed = true;
+
+      if (localLogs.length > 0) {
+        shouldProceed = confirm(
+          `⚠️ 本地已有 ${localLogs.length} 条记录。\n\n` +
+          `选择「确定」：合并导入（Notion 数据会追加到本地，相同日期会覆盖）\n` +
+          `选择「取消」：放弃导入`
+        );
+        if (!shouldProceed) return;
+      }
+
+      showLoading("正在从 Notion 读取数据...");
+
+      try {
+        const resp = await fetch(`${API_BASE}/query`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" }
+        });
+
+        if (!resp.ok) {
+          const err = await resp.json();
+          hideLoading();
+          setMsg(`❌ 读取失败: ${err.error || resp.statusText}`, "err");
+          return;
+        }
+
+        const result = await resp.json();
+        const notionPages = result.pages || [];
+
+        if (notionPages.length === 0) {
+          hideLoading();
+          setMsg("📭 Notion 数据库中暂无记录", "info");
+          return;
+        }
+
+        const importedRecords = notionPages.map(page => {
+          const props = page.properties || {};
+          // 从 Notion 读取工作内容（可能是多行）
+          let workContents = [];
+          const workContentProp = props["工作内容"];
+          if (workContentProp?.rich_text) {
+            workContents = workContentProp.rich_text.map(t => t.text?.content || "").filter(Boolean);
+          }
+          // 如果没有多行内容，尝试从页面正文读取（children）
+          // 但简化处理，只读取属性
+          if (workContents.length === 0) {
+            // 如果工作内容属性为空，尝试从其他来源
+            const singleContent = props["工作内容"]?.rich_text?.[0]?.text?.content || "";
+            if (singleContent) workContents = [singleContent];
+          }
+
+          return {
+            date: props["日期"]?.title?.[0]?.text?.content || "",
+            weekday: props["星期"]?.rich_text?.[0]?.text?.content || "",
+            weatherText: props["天气"]?.rich_text?.[0]?.text?.content || "",
+            highTemp: props["最高气温"]?.number || null,
+            lowTemp: props["最低气温"]?.number || null,
+            workContents: workContents.length > 0 ? workContents : [],
+            submittedAt: props["提交时间"]?.rich_text?.[0]?.text?.content || "",
+            notionPageId: page.id,
+            _importedFrom: "notion"
+          };
+        }).filter(r => r.date);
+
+        if (importedRecords.length === 0) {
+          hideLoading();
+          setMsg("⚠️ 未能解析到有效记录", "err");
+          return;
+        }
+
+        const existingLogs = getLogs();
+        const mergedMap = {};
+
+        existingLogs.forEach(r => {
+          mergedMap[r.date] = { ...r };
+        });
+
+        importedRecords.forEach(r => {
+          if (mergedMap[r.date]) {
+            const existing = mergedMap[r.date];
+            mergedMap[r.date] = {
+              ...r,
+              notionPageId: existing.notionPageId || r.notionPageId,
+              _importedFrom: existing.notionPageId ? undefined : "notion"
+            };
+          } else {
+            mergedMap[r.date] = { ...r };
+          }
+        });
+
+        const mergedLogs = Object.values(mergedMap).sort((a, b) =>
+          a.date < b.date ? 1 : -1
+        );
+
+        saveLogs(mergedLogs);
+        renderRecords(getFilter());
+
+        hideLoading();
+        const newCount = importedRecords.length;
+        const totalCount = mergedLogs.length;
+        setMsg(
+          `✅ 导入成功！从 Notion 导入 ${newCount} 条，合并后共 ${totalCount} 条记录`,
+          "ok"
+        );
+
+        console.log(`📥 导入完成: Notion ${newCount} 条 → 本地 ${totalCount} 条`);
+
+      } catch (e) {
+        hideLoading();
+        setMsg(`❌ 网络错误: ${e.message}`, "err");
+        console.error("导入失败:", e);
+      }
     }
 
     // ===== 搜索/筛选 =====
@@ -433,6 +760,7 @@
     });
 
     document.getElementById("syncAllBtn").addEventListener("click", syncAll);
+    document.getElementById("importNotionBtn").addEventListener("click", importFromNotion);
 
     document.getElementById("clearAllBtn").addEventListener("click", function() {
       if (confirm("⚠️ 确定清空所有本地记录？此操作不可撤销！")) {
@@ -442,12 +770,11 @@
       }
     });
 
-    // 回车搜索
     document.getElementById("searchText").addEventListener("keyup", function(e) {
       if (e.key === "Enter") renderRecords(getFilter());
     });
 
-    // 初始化
+    // ===== 初始化 =====
     renderRecords(null);
   </script>
 
