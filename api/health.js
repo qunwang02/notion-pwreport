@@ -9,14 +9,14 @@ function cors(res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 }
 
-// 工作日志预期的列结构
 const requiredSchema = {
   "日期": "title",
-  "星期": "formula",
+  "星期": "rich_text",
   "天气": "rich_text",
   "最高气温": "number",
   "最低气温": "number",
-  "工作内容": "rich_text"
+  "工作内容": "rich_text",
+  "提交时间": "rich_text"
 };
 
 function getTypeString(propObj) {
@@ -66,25 +66,19 @@ export default async function handler(req, res) {
           advice: `❌ 缺少列「${reqName}」（期望类型：${reqType}）。请在数据库中新增该列。`
         });
       } else if (gotType !== reqType) {
-        // formula 类型特殊处理
-        if (reqName === "星期" && gotType === "formula") {
-          checks.push({ field: reqName, expected: reqType, actual: gotType, ok: true });
-        } else {
-          allPass = false;
-          checks.push({
-            field: reqName,
-            expected: reqType,
-            actual: gotType,
-            ok: false,
-            advice: `❌ 列「${reqName}」类型不匹配：期望 ${reqType}，实际 ${gotType}。`
-          });
-        }
+        allPass = false;
+        checks.push({
+          field: reqName,
+          expected: reqType,
+          actual: gotType,
+          ok: false,
+          advice: `❌ 列「${reqName}」类型不匹配：期望 ${reqType}，实际 ${gotType}。`
+        });
       } else {
         checks.push({ field: reqName, expected: reqType, actual: gotType, ok: true });
       }
     }
 
-    // 检查是否有额外列（不影响使用，仅提示）
     const extras = Object.keys(actual).filter(k => !requiredSchema[k]);
 
     return res.status(200).json({
