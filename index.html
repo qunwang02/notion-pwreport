@@ -829,28 +829,30 @@
       setTimeout(autoFillWeather, 300);
     }
 
-    function collectForm() {
-      const now = new Date();
-      const submittedAt = now.toLocaleString("zh-CN", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false
-      });
-      return {
-        date: logDate.value || "",
-        weekday: weekday.value || "",
-        weatherText: weatherTextInput.value || "",
-        highTemp: parseFloat(highTempInput.value) || null,
-        lowTemp: parseFloat(lowTempInput.value) || null,
-        workContents: getWorkContents(),
-        submittedAt: submittedAt,
-        createdAt: now.toISOString()
-      };
-    }
+	function collectForm() {
+	  const now = new Date();
+	  const dateStr = logDate.value || "";
+	  const submittedAt = now.toLocaleString("zh-CN", {
+		year: "numeric",
+		month: "2-digit",
+		day: "2-digit",
+		hour: "2-digit",
+		minute: "2-digit",
+		second: "2-digit",
+		hour12: false
+	  });
+
+	  return {
+		date: dateStr,
+		weekday: dateStr ? getWeekday(dateStr) : "",  // ← 直接从日期计算
+		weatherText: weatherTextInput.value || "",
+		highTemp: parseFloat(highTempInput.value) || null,
+		lowTemp: parseFloat(lowTempInput.value) || null,
+		workContents: getWorkContents(),
+		submittedAt: submittedAt,
+		createdAt: now.toISOString()
+	  };
+	}
 
     function handleSaveLocal() {
       const data = collectForm();
