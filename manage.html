@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes" />
+  <title>日志管理</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, "PingFang SC", system-ui, sans-serif;
+      background: #f1f5f9;
+      padding: 16px;
+      padding-bottom: 80px;
+      color: #1e293b;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .header h1 {
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .header .stats {
+      font-size: 14px;
+      color: #64748b;
+      background: #e2e8f0;
+      padding: 4px 16px;
+      border-radius: 20px;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .toolbar input,
+    .toolbar select {
+      padding: 8px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 14px;
+      background: #fff;
+      flex: 1 1 180px;
+    }
+    .toolbar .btn {
+      padding: 8px 18px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #e2e8f0;
+      color: #1e293b;
+      transition: all 0.2s;
+    }
+    .toolbar .btn:active {
+      transform: scale(0.96);
+    }
+    .toolbar .btn-primary {
+      background: #3b82f6;
+      color: #fff;
+    }
+    .toolbar .btn-danger {
+      background: #ef4444;
+      color: #fff;
+    }
+    .toolbar .btn-success {
+      background: #22c55e;
+      color: #fff;
+    }
+    .record-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      border: 1px solid #eef2f6;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 8px 16px;
+      transition: all 0.2s;
+    }
+    .record-card .info {
+      flex: 1;
+      min-width: 200px;
+    }
+    .record-card .info .date {
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .record-card .info .date .weekday {
+      font-weight: 400;
+      color: #64748b;
+      font-size: 14px;
+    }
+    .record-card .info .detail {
+      font-size: 14px;
+      color: #475569;
+      margin-top: 4px;
+    }
+    .record-card .info .detail .tag {
+      display: inline-block;
+      background: #f1f5f9;
+      padding: 1px 10px;
+      border-radius: 12px;
+      font-size: 13px;
+      margin-right: 6px;
+    }
+    .record-card .actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .record-card .actions .btn-sm {
+      padding: 4px 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .record-card .actions .btn-sm:active {
+      transform: scale(0.94);
+    }
+    .record-card .actions .btn-sm.sync {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    .record-card .actions .btn-sm.del {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+    .record-card .actions .btn-sm.synced {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .record-card .actions .badge {
+      font-size: 12px;
+      color: #94a3b8;
+      background: #f1f5f9;
+      padding: 2px 10px;
+      border-radius: 12px;
+    }
+    .empty {
+      text-align: center;
+      color: #94a3b8;
+      padding: 40px 0;
+    }
+    .msg {
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 12px;
+      display: none;
+    }
+    .msg.show {
+      display: block;
+    }
+    .msg.ok {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+    .msg.err {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+    .msg.info {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+    @media (max-width: 480px) {
+      .record-card {
+        flex-direction: column;
+      }
+      .record-card .actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+      .toolbar input {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>📂 日志管理</h1>
+      <span class="stats" id="stats">共 0 条</span>
+    </div>
+
+    <div id="msg" class="msg"></div>
+
+    <div class="toolbar">
+      <input type="date" id="searchDate" placeholder="按日期筛选" />
+      <input type="text" id="searchText" placeholder="搜索工作内容..." />
+      <button class="btn btn-primary" id="searchBtn">🔍 搜索</button>
+      <button class="btn" id="resetBtn">↻ 重置</button>
+      <button class="btn btn-success" id="syncAllBtn">📤 全部同步</button>
+      <button class="btn btn-danger" id="clearAllBtn">🗑️ 清空所有</button>
+      <a href="/" style="text-decoration:none;"><button class="btn">📝 写日志</button></a>
+    </div>
+
+    <div id="recordList"></div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "work_logs_v1";
+    const API_BASE = "/api";
+
+    const msgEl = document.getElementById("msg");
+    let msgTimer = null;
+
+    function setMsg(text, type = "info") {
+      if (msgTimer) clearTimeout(msgTimer);
+      msgEl.textContent = text;
+      msgEl.className = "msg show " + type;
+      msgTimer = setTimeout(() => { msgEl.className = "msg"; }, 4000);
+    }
+
+    function getLogs() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch { return []; }
+    }
+
+    function saveLogs(logs) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+    }
+
+    function renderRecords(filterFn) {
+      const logs = getLogs();
+      const container = document.getElementById("recordList");
+      document.getElementById("stats").textContent = `共 ${logs.length} 条`;
+
+      let filtered = logs;
+      if (filterFn) filtered = logs.filter(filterFn);
+      // 按日期倒序
+      filtered = filtered.sort((a, b) => (a.date < b.date ? 1 : -1));
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="empty">📭 暂无记录</div>`;
+        return;
+      }
+
+      container.innerHTML = "";
+      filtered.forEach((r, idx) => {
+        const realIdx = logs.indexOf(r);
+        const content = (r.workContents || []).join("；") || "（无内容）";
+        const synced = r.notionPageId ? true : false;
+
+        const div = document.createElement("div");
+        div.className = "record-card";
+        div.innerHTML = `
+          <div class="info">
+            <div class="date">
+              ${r.date || "—"} 
+              <span class="weekday">${r.weekday || ""}</span>
+            </div>
+            <div class="detail">
+              <span class="tag">${r.weatherText || "—"} ${r.highTemp ? r.highTemp + "°C" : ""}${r.lowTemp ? "/" + r.lowTemp + "°C" : ""}</span>
+              ${content.length > 30 ? content.slice(0, 30) + "..." : content}
+            </div>
+            ${r.submittedAt ? `<div style="font-size:12px;color:#94a3b8;margin-top:2px;">⏱️ ${r.submittedAt}</div>` : ""}
+          </div>
+          <div class="actions">
+            ${synced ? `<span class="badge">✅ 已同步</span>` : `<span class="badge">⏳ 未同步</span>`}
+            <button class="btn-sm sync" data-idx="${realIdx}">${synced ? "🔄 重传" : "📤 同步"}</button>
+            <button class="btn-sm del" data-idx="${realIdx}">🗑️ 删除</button>
+          </div>
+        `;
+        container.appendChild(div);
+
+        // 同步按钮
+        div.querySelector(".sync").addEventListener("click", function() {
+          const idx = parseInt(this.dataset.idx);
+          syncOne(idx);
+        });
+
+        // 删除按钮
+        div.querySelector(".del").addEventListener("click", function() {
+          const idx = parseInt(this.dataset.idx);
+          if (confirm(`确定删除 ${logs[idx]?.date || "这条"} 记录吗？`)) {
+            const all = getLogs();
+            all.splice(idx, 1);
+            saveLogs(all);
+            renderRecords(getFilter());
+            setMsg("🗑️ 已删除", "ok");
+          }
+        });
+      });
+    }
+
+    // ===== 单条同步 =====
+    async function syncOne(idx) {
+      const logs = getLogs();
+      const data = logs[idx];
+      if (!data) { setMsg("记录不存在", "err"); return; }
+
+      setMsg(`⏳ 同步 ${data.date} ...`, "info");
+
+      const payload = {
+        date: data.date,
+        weekday: data.weekday || "",
+        weatherText: data.weatherText || "",
+        highTemp: data.highTemp,
+        lowTemp: data.lowTemp,
+        workContent: (data.workContents || []).join("\n"),
+        submittedAt: data.submittedAt || ""
+      };
+
+      try {
+        const resp = await fetch(`${API_BASE}/submit`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const result = await resp.json();
+        if (!resp.ok) {
+          setMsg(`❌ 同步失败: ${result.error || resp.statusText}`, "err");
+          return;
+        }
+        const latest = getLogs();
+        if (latest[idx]) {
+          latest[idx].notionPageId = result.pageId || "";
+          saveLogs(latest);
+          renderRecords(getFilter());
+        }
+        setMsg(`✅ ${data.date} 同步成功！`, "ok");
+      } catch (e) {
+        setMsg(`❌ 网络错误: ${e.message}`, "err");
+      }
+    }
+
+    // ===== 全部同步 =====
+    async function syncAll() {
+      const logs = getLogs();
+      const unsynced = logs.filter(r => !r.notionPageId);
+      if (unsynced.length === 0) {
+        setMsg("✅ 所有记录已同步", "ok");
+        return;
+      }
+      if (!confirm(`确定同步 ${unsynced.length} 条未同步记录吗？`)) return;
+
+      let success = 0,
+        fail = 0;
+      for (let i = 0; i < logs.length; i++) {
+        const r = logs[i];
+        if (r.notionPageId) continue;
+        try {
+          const payload = {
+            date: r.date,
+            weekday: r.weekday || "",
+            weatherText: r.weatherText || "",
+            highTemp: r.highTemp,
+            lowTemp: r.lowTemp,
+            workContent: (r.workContents || []).join("\n"),
+            submittedAt: r.submittedAt || ""
+          };
+          const resp = await fetch(`${API_BASE}/submit`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          const result = await resp.json();
+          if (resp.ok) {
+            const latest = getLogs();
+            if (latest[i]) {
+              latest[i].notionPageId = result.pageId || "";
+              saveLogs(latest);
+            }
+            success++;
+          } else {
+            fail++;
+          }
+        } catch (e) {
+          fail++;
+        }
+        // 更新进度（每5条刷新一次）
+        if (i % 5 === 0 || i === logs.length - 1) {
+          renderRecords(getFilter());
+          setMsg(`⏳ 同步进度: ${i + 1}/${logs.length}`, "info");
+        }
+      }
+      renderRecords(getFilter());
+      setMsg(`✅ 同步完成！成功 ${success} 条${fail ? `，失败 ${fail} 条` : ""}`, fail ? "err" : "ok");
+    }
+
+    // ===== 搜索/筛选 =====
+    function getFilter() {
+      const date = document.getElementById("searchDate").value;
+      const text = document.getElementById("searchText").value.trim().toLowerCase();
+      if (!date && !text) return null;
+      return function(r) {
+        let match = true;
+        if (date && r.date !== date) match = false;
+        if (text) {
+          const content = (r.workContents || []).join(" ").toLowerCase();
+          if (!content.includes(text)) match = false;
+        }
+        return match;
+      };
+    }
+
+    document.getElementById("searchBtn").addEventListener("click", function() {
+      renderRecords(getFilter());
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function() {
+      document.getElementById("searchDate").value = "";
+      document.getElementById("searchText").value = "";
+      renderRecords(null);
+      setMsg("已重置筛选", "ok");
+    });
+
+    document.getElementById("syncAllBtn").addEventListener("click", syncAll);
+
+    document.getElementById("clearAllBtn").addEventListener("click", function() {
+      if (confirm("⚠️ 确定清空所有本地记录？此操作不可撤销！")) {
+        saveLogs([]);
+        renderRecords(null);
+        setMsg("已清空所有记录", "ok");
+      }
+    });
+
+    // 回车搜索
+    document.getElementById("searchText").addEventListener("keyup", function(e) {
+      if (e.key === "Enter") renderRecords(getFilter());
+    });
+
+    // 初始化
+    renderRecords(null);
+  </script>
+
+</body>
+</html>
