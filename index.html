@@ -871,58 +871,63 @@
       setMsg(`✅ 已保存 ${data.workContents.length} 项工作内容`, "ok");
     }
 
-    async function handleSubmitNotion() {
-      const data = collectForm();
-      if (!data.date) { setMsg("请选择日期", "err"); return; }
-      if (data.workContents.length === 0) { setMsg("请至少填写一项工作内容", "err"); return; }
-
-      const logs = getLogs();
-      const existingIdx = logs.findIndex(l => l.date === data.date);
-      let idx = logs.length;
-      if (existingIdx !== -1) {
-        idx = existingIdx;
-        logs[idx] = { ...data, notionPageId: logs[idx]?.notionPageId || "" };
-      } else {
-        logs.push(data);
-        idx = logs.length - 1;
-      }
-      saveLogs(logs);
-      renderRecords();
-
-      setMsg("⏳ 提交到 Notion 中...", "info");
-
-      const payload = {
-        date: data.date,
-        weekday: data.weekday,
-        weatherText: data.weatherText || "",
-        highTemp: data.highTemp,
-        lowTemp: data.lowTemp,
-        workContent: data.workContents.join("\n"),
-        submittedAt: data.submittedAt
-      };
-
-      try {
-        const resp = await fetch(`${API_BASE}/submit`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        const result = await resp.json();
-        if (!resp.ok) {
-          setMsg(`❌ 提交失败: ${result.error || resp.statusText}`, "err");
-          return;
-        }
-        const latest = getLogs();
-        if (latest[idx]) {
-          latest[idx].notionPageId = result.pageId || "";
-          saveLogs(latest);
-          renderRecords();
-        }
-        setMsg(`✅ 提交成功！页面ID: ${result.pageId || "已创建"}`, "ok");
-      } catch (e) {
-        setMsg(`❌ 网络错误: ${e.message}`, "err");
-      }
-    }
+	 async function handleSubmitNotion() {
+	  const data = collectForm();
+	  if (!data.date) { setMsg("请选择日期", "err"); return; }
+	  if (data.workContents.length === 0) { setMsg("请至少填写一项工作内容", "err"); return; }
+	
+	  // ===== 第一步：先保存本地（无论 Notion 是否成功） =====
+	  const logs = getLogs();
+	  const existingIdx = logs.findIndex(l => l.date === data.date);
+	  let idx = logs.length;
+	  if (existingIdx !== -1) {
+	    idx = existingIdx;
+	    logs[idx] = { ...data, notionPageId: logs[idx]?.notionPageId || "" };
+	  } else {
+	    logs.push(data);
+	    idx = logs.length - 1;
+	  }
+	  saveLogs(logs);
+	  renderRecords();
+	
+	  setMsg("⏳ 提交到 Notion 中...", "info");
+	
+	  // ===== 第二步：提交 Notion =====
+	  const payload = {
+	    date: data.date,
+	    weekday: data.weekday,
+	    weatherText: data.weatherText || "",
+	    highTemp: data.highTemp,
+	    lowTemp: data.lowTemp,
+	    workContent: data.workContents.join("\n"),
+	    submittedAt: data.submittedAt
+	  };
+	
+	  try {
+	    const resp = await fetch(`${API_BASE}/submit`, {
+	      method: "POST",
+	      headers: { "Content-Type": "application/json" },
+	      body: JSON.stringify(payload)
+	    });
+	    const result = await resp.json();
+	
+	    if (!resp.ok) {
+	      setMsg(`⚠️ 已保存本地，但 Notion 提交失败: ${result.error || resp.statusText}`, "err");
+	      return;
+	    }
+	
+	    // ===== 第三步：提交成功后更新 pageId =====
+	    const latest = getLogs();
+	    if (latest[idx]) {
+	      latest[idx].notionPageId = result.pageId || "";
+	      saveLogs(latest);
+	      renderRecords();
+	    }
+	    setMsg(`✅ 提交成功！页面ID: ${result.pageId || "已创建"}`, "ok");
+	  } catch (e) {
+	    setMsg(`⚠️ 已保存本地，但网络错误: ${e.message}`, "err");
+	  }
+	}
 
     function handleExportCSV() {
       const logs = getLogs();
